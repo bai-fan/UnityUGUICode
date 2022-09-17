@@ -276,6 +276,7 @@ namespace UnityEngine.EventSystems
             Vector2 pos = input.mousePosition;
             if (Cursor.lockState == CursorLockMode.Locked)
             {
+                //鼠标失去焦点
                 // We don't want to do ANY cursor-based interaction when the mouse is locked
                 leftData.position = new Vector2(-1.0f, -1.0f);
                 leftData.delta = Vector2.zero;
