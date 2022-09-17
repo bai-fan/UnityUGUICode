@@ -7,8 +7,7 @@ namespace UnityEngine.EventSystems
     [AddComponentMenu("Event/Standalone Input Module")]
     /// <summary>
     /// A BaseInputModule designed for mouse / keyboard / controller input.
-    /// 面向"PC, Mac& Linux Standalone"这个平台的输入模块
-    /// 标准键盘鼠标输入
+    /// 鼠标/键盘/控制器输入
     /// </summary>
     /// <remarks>
     /// Input module for working with, mouse, keyboard, or controller.
