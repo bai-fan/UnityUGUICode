@@ -349,7 +349,7 @@ namespace UnityEngine.UI
                 }
             }
 
-            //根据深度对数组进行逆序
+            //根据深度对Graphic排序
             s_SortedGraphics.Sort((g1, g2) => g2.depth.CompareTo(g1.depth));
             totalCount = s_SortedGraphics.Count;
             for (int i = 0; i < totalCount; ++i)
