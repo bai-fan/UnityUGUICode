@@ -258,6 +258,7 @@ namespace UnityEngine.UI
 
         /// <summary>
         /// Mark the material as dirty and needing rebuilt.
+        /// 更新材质
         /// </summary>
         /// <remarks>
         /// Send a OnDirtyMaterialCallback notification if any elements are registered. See RegisterDirtyMaterialCallback
@@ -403,6 +404,7 @@ namespace UnityEngine.UI
 
         /// <summary>
         /// Returns the default material for the graphic.
+        /// 默认材质
         /// </summary>
         public virtual Material defaultMaterial
         {
@@ -411,6 +413,7 @@ namespace UnityEngine.UI
 
         /// <summary>
         /// The Material set by the user
+        /// 材质
         /// </summary>
         public virtual Material material
         {
@@ -430,6 +433,9 @@ namespace UnityEngine.UI
 
         /// <summary>
         /// The material that will be sent for Rendering (Read only).
+        /// 渲染材质
+        /// 如果存在实现IMaterialModifier接口的组件则会修改材质
+        /// 没有存在实现IMaterialModifier接口的组件则渲染材质和材质相同
         /// </summary>
         /// <remarks>
         /// This is the material that actually gets sent to the CanvasRenderer. By default it's the same as [[Graphic.material]]. When extending Graphic you can override this to send a different material to the CanvasRenderer than the one set by Graphic.material. This is useful if you want to modify the user set material in a non destructive manner.

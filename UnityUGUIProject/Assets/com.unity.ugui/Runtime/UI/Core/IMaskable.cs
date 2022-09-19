@@ -9,6 +9,7 @@ namespace UnityEngine.UI
     {
         /// <summary>
         /// Recalculate masking for this element and all children elements.
+        /// ÖØĞÂ¼ÆËãÕÚÕÖ
         /// </summary>
         /// <remarks>
         /// Use this to update the internal state (recreate materials etc).

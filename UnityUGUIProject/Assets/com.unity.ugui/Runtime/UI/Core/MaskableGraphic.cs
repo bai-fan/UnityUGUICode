@@ -9,6 +9,7 @@ namespace UnityEngine.UI
     /// </summary>
     public abstract class MaskableGraphic : Graphic, IClippable, IMaskable, IMaterialModifier
     {
+        //是否需要重新计算模板材质
         [NonSerialized]
         protected bool m_ShouldRecalculateStencil = true;
 
@@ -35,7 +36,7 @@ namespace UnityEngine.UI
         protected bool m_IncludeForMasking = false;
 
         [Serializable]
-        public class CullStateChangedEvent : UnityEvent<bool> {}
+        public class CullStateChangedEvent : UnityEvent<bool> { }
 
         // Event delegates triggered on click.
         [SerializeField]
@@ -118,6 +119,7 @@ namespace UnityEngine.UI
 
         /// <summary>
         /// See IClippable.Cull
+        /// validRect为false或者输入的clipRect与所属Canvas的矩形区域不重合
         /// </summary>
         public virtual void Cull(Rect clipRect, bool validRect)
         {
@@ -125,6 +127,9 @@ namespace UnityEngine.UI
             UpdateCull(cull);
         }
 
+        /// <summary>
+        /// 更新遮罩剔除
+        /// </summary>
         private void UpdateCull(bool cull)
         {
             if (canvasRenderer.cull != cull)
@@ -132,12 +137,13 @@ namespace UnityEngine.UI
                 canvasRenderer.cull = cull;
                 UISystemProfilerApi.AddMarker("MaskableGraphic.cullingChanged", this);
                 m_OnCullStateChanged.Invoke(cull);
-                OnCullingChanged();
+                OnCullingChanged();//添加到图像重建队列
             }
         }
 
         /// <summary>
         /// See IClippable.SetClipRect
+        /// validRect参数，为canvasRenderer开启或关闭矩形裁剪
         /// </summary>
         public virtual void SetClipRect(Rect clipRect, bool validRect)
         {
@@ -147,6 +153,9 @@ namespace UnityEngine.UI
                 canvasRenderer.DisableRectClipping();
         }
 
+        /// <summary>
+        /// 设置渐变度
+        /// </summary>
         public virtual void SetClipSoftness(Vector2 clipSoftness)
         {
             canvasRenderer.clippingSoftness = clipSoftness;
@@ -161,6 +170,7 @@ namespace UnityEngine.UI
 
             if (isMaskingGraphic)
             {
+                //如果当前Graphic是被遮罩的图像，更新材质
                 MaskUtilities.NotifyStencilStateChanged(this);
             }
         }
@@ -169,10 +179,10 @@ namespace UnityEngine.UI
         {
             base.OnDisable();
             m_ShouldRecalculateStencil = true;
-            SetMaterialDirty();
-            UpdateClipParent();
-            StencilMaterial.Remove(m_MaskMaterial);
-            m_MaskMaterial = null;
+            SetMaterialDirty();//更新材质
+            UpdateClipParent();//更新自身对应的RectMask2D对象
+            StencilMaterial.Remove(m_MaskMaterial);//移除遮罩材质
+            m_MaskMaterial = null;//设置遮罩材质为nil
 
             if (isMaskingGraphic)
             {
@@ -205,7 +215,7 @@ namespace UnityEngine.UI
 
         [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
         [Obsolete("Not used anymore.", true)]
-        public virtual void ParentMaskStateChanged() {}
+        public virtual void ParentMaskStateChanged() { }
 
         protected override void OnCanvasHierarchyChanged()
         {
@@ -249,11 +259,16 @@ namespace UnityEngine.UI
             }
         }
 
+        /// <summary>
+        /// 更新自身对应的RectMask2D对象
+        /// </summary>
         private void UpdateClipParent()
         {
+            //父对象RectMask2D组件
             var newParent = (maskable && IsActive()) ? MaskUtilities.GetRectMaskForClippable(this) : null;
 
             // if the new parent is different OR is now inactive
+            //m_ParentMask父对象的RectMask2D组件
             if (m_ParentMask != null && (newParent != m_ParentMask || !newParent.IsActive()))
             {
                 m_ParentMask.RemoveClippable(this);
@@ -262,13 +277,14 @@ namespace UnityEngine.UI
 
             // don't re-add it if the newparent is inactive
             if (newParent != null && newParent.IsActive())
-                newParent.AddClippable(this);
+                newParent.AddClippable(this);//添加到RectMask2D的m_ClipTargets
 
             m_ParentMask = newParent;
         }
 
         /// <summary>
         /// See IClippable.RecalculateClipping
+        /// RectMask2D->MaskUtilities.Notify2DMaskStateChanged
         /// </summary>
         public virtual void RecalculateClipping()
         {
@@ -277,6 +293,8 @@ namespace UnityEngine.UI
 
         /// <summary>
         /// See IMaskable.RecalculateMasking
+        /// 移除掉遮罩材质
+        /// 遮罩材质置为空
         /// </summary>
         public virtual void RecalculateMasking()
         {

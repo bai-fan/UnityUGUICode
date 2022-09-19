@@ -22,21 +22,25 @@ namespace UnityEngine.UI
     {
         /// <summary>
         /// GameObject of the IClippable object
+        /// 实现此接口的obj
         /// </summary>
         GameObject gameObject { get; }
 
         /// <summary>
         /// Will be called when the state of a parent IClippable changed.
+        /// 重新计算待裁剪对象
         /// </summary>
         void RecalculateClipping();
 
         /// <summary>
         /// The RectTransform of the clippable.
+        /// 实现此接口的rectTransform
         /// </summary>
         RectTransform rectTransform { get; }
 
         /// <summary>
         /// Clip and cull the IClippable given a specific clipping rect
+        /// 裁剪和剔除给定的矩形
         /// </summary>
         /// <param name="clipRect">The Rectangle in which to clip against.</param>
         /// <param name="validRect">Is the Rect valid. If not then the rect has 0 size.</param>
@@ -44,6 +48,7 @@ namespace UnityEngine.UI
 
         /// <summary>
         /// Set the clip rect for the IClippable.
+        /// 设置裁剪矩形
         /// </summary>
         /// <param name="value">The Rectangle for the clipping</param>
         /// <param name="validRect">Is the rect valid.</param>
@@ -51,7 +56,7 @@ namespace UnityEngine.UI
 
         /// <summary>
         /// Set the clip softness for the IClippable.
-        ///
+        /// 设置渐变度
         /// The softness is a linear alpha falloff over clipSoftness pixels.
         /// </summary>
         /// <param name="clipSoftness">The number of pixels to apply the softness to </param>

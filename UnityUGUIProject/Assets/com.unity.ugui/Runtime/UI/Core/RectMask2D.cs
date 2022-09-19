@@ -323,7 +323,7 @@ namespace UnityEngine.UI
                 return;
 
             m_ShouldRecalculateClipRects = true;
-            clippable.SetClipRect(new Rect(), false);
+            clippable.SetClipRect(new Rect(), false);//¹Ø±Õ¾ØÐÎ²Ã¼ô
 
             MaskableGraphic maskable = clippable as MaskableGraphic;
 
